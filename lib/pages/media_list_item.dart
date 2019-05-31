@@ -15,7 +15,7 @@ class MediaListItem extends StatelessWidget {
             child: Stack(
               children: <Widget>[
                 FadeInImage.assetNetwork(
-                  placeholder: 'assets/placeholder.jpg',
+                  placeholder: 'assets/404-not-found.png',
                   image: media.getbackdropURL(),
                   fit: BoxFit.cover,
                   fadeInDuration: Duration(milliseconds: 40),
@@ -37,7 +37,7 @@ class MediaListItem extends StatelessWidget {
                 ),
                 Positioned(
                   left: 10.0,
-                  bottom: 30.0,
+                  bottom: 10.0,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -48,6 +48,15 @@ class MediaListItem extends StatelessWidget {
                             fontWeight: FontWeight.bold,
                             color: Colors.white
                           ),
+                        ),
+                      ),
+                      Container(
+                        padding: EdgeInsets.only(top: 4.0),
+                        child: Text(
+                          media.getGenres(),
+                          style: TextStyle(color: Colors.white),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       )
                     ],
