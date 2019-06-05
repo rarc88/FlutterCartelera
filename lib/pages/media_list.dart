@@ -1,9 +1,14 @@
-import 'package:cartelera/common/httpHandle.dart';
+import 'package:cartelera/common/mediaProvider.dart';
 import 'package:cartelera/models/media.dart';
 import 'package:cartelera/pages/media_list_item.dart';
 import 'package:flutter/material.dart';
 
 class Media_List extends StatefulWidget {
+  final MediaProvider provider;
+  String category;
+
+  Media_List(this.provider, this.category);
+
   @override
   State<StatefulWidget> createState() {
     return _Media_List();
@@ -19,8 +24,17 @@ class _Media_List extends State<Media_List> {
     loadMovies();
   }
 
+  @override
+  void didUpdateWidget(Media_List oldWidget) {
+    if(oldWidget.provider.runtimeType != widget.provider.runtimeType) {
+      _media = List();
+      loadMovies();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
   void loadMovies() async {
-    var movies = await HttpHandle().fetchMovies();
+    var movies = await widget.provider.fetchMedia(widget.category);
     _media.addAll(movies);
     setState(() {});
   }

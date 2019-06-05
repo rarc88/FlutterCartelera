@@ -1,5 +1,8 @@
+import 'package:cartelera/common/mediaProvider.dart';
 import 'package:cartelera/pages/media_list.dart';
+import 'package:cartelera/pages/media_list_item.dart';
 import 'package:flutter/material.dart';
+
 
 class Home extends StatefulWidget {
   final String title;
@@ -13,6 +16,25 @@ class Home extends StatefulWidget {
 }
 
 class _Home extends State<Home> {
+  final MediaProvider movieProvider = MovieProvider();
+  final MediaProvider showProvider = ShowProvider();
+  MediaType mediaType = MediaType.movie;
+
+  PageController _pageController;
+  int _page = 0;
+
+  @override
+  void initState() {
+    _pageController = PageController();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,15 +57,24 @@ class _Home extends State<Home> {
             ),
             ListTile(
               title: Text('Peliculas'),
+              selected: this.mediaType == MediaType.movie,
               trailing: Icon(Icons.local_movies),
+              onTap: () {
+                _changeMediaType(MediaType.movie);
+                Navigator.of(context).pop();
+              },
             ),
             Divider(
               height: 5.0,
             ),
             ListTile(
               title: Text('Television'),
+              selected: this.mediaType == MediaType.show,
               trailing: Icon(Icons.live_tv),
-              onTap: () => Navigator.of(context).pop(),
+              onTap: () {
+                _changeMediaType(MediaType.show);
+                Navigator.of(context).pop();
+              },
             ),
             Divider(
               height: 5.0,
@@ -57,12 +88,17 @@ class _Home extends State<Home> {
         ),
       ),
       body: PageView(
-        children: <Widget>[
-          Media_List()
-        ],
+        children: _getMediaList(mediaType),
+        controller: _pageController,
+        onPageChanged: (int index) {
+          _page = index;
+          setState(() {});
+        },
       ),
       bottomNavigationBar: BottomNavigationBar(
         items: _getFooterItems(),
+        onTap: _navigationTapped,
+        currentIndex: _page,
       ),
     );
   }
@@ -75,13 +111,37 @@ class _Home extends State<Home> {
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.update),
-        title: Text('Proximamente')
+        title: Text(mediaType == MediaType.movie ? 'Proximamente': 'En el aire')
       ),
       BottomNavigationBarItem(
         icon: Icon(Icons.star),
         title: Text('Mejor valoradas')
       ),
     ];
+  }
+
+  void _changeMediaType(MediaType mediaType) {
+    if(this.mediaType != mediaType) {
+      this.mediaType = mediaType;
+      setState(() {});
+    }
+  }
+
+  List<Widget> _getMediaList(MediaType mediaType) {
+    return this.mediaType == MediaType.movie ? <Widget>[
+      Media_List(this.movieProvider, 'popular'),
+      Media_List(this.movieProvider, 'upcoming'),
+      Media_List(this.movieProvider, 'top_rated')
+    ]
+    : <Widget>[
+        Media_List(this.showProvider, 'popular'),
+        Media_List(this.showProvider, 'on_the_air'),
+        Media_List(this.showProvider, 'top_rated'),
+    ];
+  }
+
+  void _navigationTapped(int page) {
+    this._pageController.animateToPage(page, duration: Duration(milliseconds: 300), curve: Curves.ease);
   }
   
 }

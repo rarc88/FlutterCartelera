@@ -51,6 +51,7 @@ class MediaListItem extends StatelessWidget {
                         ),
                       ),
                       Container(
+                        width: 300.0,
                         padding: EdgeInsets.only(top: 4.0),
                         child: Text(
                           media.getGenres(),
@@ -58,6 +59,29 @@ class MediaListItem extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
+                      )
+                    ],
+                  ),
+                ),
+                Positioned(
+                  right: 5.0,
+                  bottom: 5.0,
+                  child: Column(
+                    children: <Widget>[
+                      Row(
+                        children: <Widget>[
+                          Text(media.voteAverage.toString()),
+                          Container(width: 4.0,),
+                          Icon(Icons.star, color: Colors.white)
+                        ],
+                      ),
+                      Container(height: 1.0,),
+                      Row(
+                        children: <Widget>[
+                          Text(media.getReleaseYear().toString()),
+                          Container(width: 4.0,),
+                          Icon(Icons.date_range, color: Colors.white)
+                        ],
                       )
                     ],
                   ),
